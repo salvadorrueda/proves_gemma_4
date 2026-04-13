@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app_gemma:
+    build: .
+    # Ens permet la interacció per consola (stdin/tty)
+    stdin_open: true
+    tty: true
+    # Mapegem els directoris del sistema local cap a dins per poder editar el codi i veure'n el resultat sense compilar de nou
+    volumes:
+      - .:/app
+      # Conservem la cache de Hugging Face en un volum per no haver de descarregar un model cada cop que baixem / pugem el docker.
+      - huggingface_cache:/root/.cache/huggingface
+    # Passa les variables d'entorn que calgui (com el HF_TOKEN)
+    env_file:
+      - .env
+    # (Opcional) descomentar 'deploy' si disposes d'una GPU instalada local i configurada al teu Docker
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+volumes:
+  huggingface_cache:
